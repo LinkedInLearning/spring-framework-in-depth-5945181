@@ -1,8 +1,6 @@
 package com.frankmoley.lil.fid;
 
-import com.frankmoley.lil.fid.service.GreetingService;
 import com.frankmoley.lil.fid.service.OutputService;
-import com.frankmoley.lil.fid.service.TimeService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
