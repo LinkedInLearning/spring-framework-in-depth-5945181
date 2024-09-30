@@ -1,6 +1,7 @@
 package com.frankmoley.lil.fid.aspect;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import java.util.Arrays;
+import java.util.Collection;
 
 @Component
 @Aspect
@@ -20,8 +22,8 @@ public class LoggingAspect {
     //do nothing
   }
 
-  @Before("executeLogging()")
-  public void logMethodCall(JoinPoint joinPoint){
+  @AfterReturning(pointcut = "executeLogging()", returning = "returnValue")
+  public void logMethodCall(JoinPoint joinPoint, Object returnValue){
     StringBuilder message = new StringBuilder("Method=");
     message.append(joinPoint.getSignature().getName());
     Object[]args = joinPoint.getArgs();
@@ -31,6 +33,11 @@ public class LoggingAspect {
         message.append(arg).append(" | ");
       });
       message.append("]");
+    }
+    if(returnValue instanceof Collection<?>){
+      message.append(" returning: ").append(((Collection)returnValue).size()).append("instances");
+    }else{
+      message.append(", returning: ").append(returnValue.toString());
     }
     LOGGER.info(message.toString().replace("| ]", "]"));
   }
