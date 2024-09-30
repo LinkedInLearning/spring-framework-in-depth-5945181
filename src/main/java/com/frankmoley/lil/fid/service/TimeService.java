@@ -1,5 +1,6 @@
 package com.frankmoley.lil.fid.service;
 
+import com.frankmoley.lil.fid.aspect.Countable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class TimeService {
         super();
     }
 
+    @Countable
     public String getCurrentTime(){
         LocalDateTime now = LocalDateTime.now();
         if (is24) {
