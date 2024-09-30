@@ -1,7 +1,9 @@
 package com.frankmoley.lil.fid.aspect;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -22,10 +24,15 @@ public class LoggingAspect {
     //do nothing
   }
 
-  @AfterReturning(pointcut = "executeLogging()", returning = "returnValue")
-  public void logMethodCall(JoinPoint joinPoint, Object returnValue){
+  @Around("executeLogging()")
+  public Object logMethodCall(ProceedingJoinPoint joinPoint) throws Throwable {
+    long startTime = System.currentTimeMillis();
+    Object returnValue = joinPoint.proceed();
+    Thread.sleep(5);
+    long totalTime = System.currentTimeMillis() - startTime;
     StringBuilder message = new StringBuilder("Method=");
     message.append(joinPoint.getSignature().getName());
+    message.append( " totalTime: ").append(totalTime).append("ms ");
     Object[]args = joinPoint.getArgs();
     if(null != args && args.length>0){
       message.append(" | args=[ ");
@@ -40,5 +47,6 @@ public class LoggingAspect {
       message.append(", returning: ").append(returnValue.toString());
     }
     LOGGER.info(message.toString().replace("| ]", "]"));
+    return returnValue;
   }
 }
